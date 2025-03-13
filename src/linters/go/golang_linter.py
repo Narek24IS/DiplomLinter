@@ -1,6 +1,6 @@
 from pathlib import Path
 import subprocess
-from base import Linter, LinterResult
+from src.linters.base import Linter, LinterResult
 
 
 class GolangLinter(Linter):
