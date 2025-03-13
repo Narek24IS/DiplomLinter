@@ -2,9 +2,9 @@ import argparse
 import os
 import sys
 from pathlib import Path
-from linters.python.python_linter import PythonLinter
-from linters.cpp.cpp_linter import CppLinter
-from linters.go.golang_linter import GolangLinter
+from src.linters.python.python_linter import PythonLinter
+from src.linters.cpp.cpp_linter import CppLinter
+from src.linters.go.golang_linter import GolangLinter
 import logging
 
 
