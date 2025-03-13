@@ -2,9 +2,9 @@ import argparse
 import os
 import sys
 from pathlib import Path
-from linters.python_linter import PythonLinter
-from linters.cpp_linter import CppLinter
-from linters.golang_linter import GolangLinter
+from linters.python.python_linter import PythonLinter
+from linters.cpp.cpp_linter import CppLinter
+from linters.go.golang_linter import GolangLinter
 import logging
 
 
@@ -28,20 +28,22 @@ class LinterFactory:
 
 
 def parse_args():
-    """Разбор аргументов командной строки"""
-    parser = argparse.ArgumentParser(
-        description='Универсальный линтер для проверки кода')
-    parser.add_argument('language', type=str,
+    parser = argparse.ArgumentParser(description='Универсальный линтер для проверки кода')
+    parser.add_argument('language', type=str, choices=['python', 'cpp', 'c', 'go'],
                         help='Язык программирования (python, cpp, c, go)')
     parser.add_argument('path', type=str,
                         help='Путь к проверяемой директории')
     parser.add_argument('--fix', action='store_true',
                         help='Автоматически исправлять найденные проблемы')
+    parser.add_argument('--output', "-o", default=None,
+                        help='Сохранить результат в указанный файл: -o <output.txt>')
     return parser.parse_args()
 
 
 def main():
     """Основная функция программы"""
+    logging.basicConfig(format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
+                        level=logging.INFO)
     args = parse_args()
 
     if not os.path.exists(args.path):
@@ -53,7 +55,7 @@ def main():
         logging.info(f"Запуск линтера для {args.language}...")
 
         # Запуск проверки
-        result = linter.run(Path(args.path), fix=args.fix)
+        result = linter.run(Path(args.path), args.fix, args.output)
 
         # Вывод результатов
         if result.success:
@@ -68,7 +70,7 @@ def main():
             sys.exit(1)
 
     except Exception as e:
-        logging.info(f"Ошибка: {str(e)}")
+        logging.error(f"Ошибка: {str(e)}", exc_info=e)
         sys.exit(1)
 
 

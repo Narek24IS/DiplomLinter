@@ -11,11 +11,13 @@ class LinterResult:
 
 class Linter:
     """Базовый класс для всех линтеров"""
-    def __init__(self, linter_name: str):
+    def __init__(self, language:str, linter_name: str):
+        self.language = language
         self.linter_name = linter_name
-        self.linter_path = Path(__file__).parent.parent / 'bin' / self.linter_name
+        self.cur_dir = Path(__file__).parent / self.language
+        self.linter_path = self.cur_dir / self.linter_name
         if not self.linter_path.exists():
-            raise RuntimeError("Бинарник линтера не найден в локальных зависимостях")
+            raise RuntimeError(f"Бинарник линтера не найден в локальных зависимостях по пути {self.linter_path}")
         self.linter_path = str(self.linter_path.resolve())
 
     def run(self, path: Path, fix: bool = False) -> LinterResult:
