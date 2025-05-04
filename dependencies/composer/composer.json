@@ -1,0 +1,9 @@
+{
+  "$schema": "https://getcomposer.org/schema.json",
+  "require": {
+    "squizlabs/php_codesniffer": "^3.11",
+    "phpstan/phpstan": "^2.1",
+    "vimeo/psalm": "^6.8",
+    "php": "^8.4"
+  }
+}

@@ -1,0 +1,51 @@
+secrets:
+  GITHUB_TOKEN:
+    environment: GITHUB_TOKEN
+
+services:
+  rabbitmq:
+    image: rabbitmq:3-management
+    container_name: rabbit-mq
+    hostname: rabbit
+    ports:
+      - "5672:5672"
+      - "15672:15672"
+    volumes:
+      - rabbitmq_data:/var/lib/rabbitmq
+    restart: unless-stopped
+    healthcheck:
+      test: [ "CMD", "rabbitmq-diagnostics", "ping" ]
+      interval: 5s
+      timeout: 10s
+      retries: 10
+    networks:
+      rabbit-mq:
+
+  backend:
+    build:
+      context: .
+      secrets:
+        - GITHUB_TOKEN
+      args:
+        - PRIVATE_KEY=${PRIVATE_KEY}
+      target: slim-linter
+    image: super_linter:latest
+    container_name: compose_super_linter
+    hostname: super_linter
+    ports:
+      - 8888:8888
+    env_file:
+      - .env
+    environment:
+      - RMQ_DSN=amqp://guest:guest@rabbitmq:5672/
+    networks:
+      rabbit-mq:
+    depends_on:
+      rabbitmq:
+        condition: service_healthy
+
+volumes:
+  rabbitmq_data:
+
+networks:
+  rabbit-mq:
