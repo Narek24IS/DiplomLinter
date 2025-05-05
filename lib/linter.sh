@@ -12,6 +12,7 @@ DEFAULT_WORKSPACE="${DEFAULT_WORKSPACE:-${DEFAULT_SUPER_LINTER_WORKSPACE}}" # De
 # shellcheck disable=SC2034
 GITHUB_WORKSPACE=${DEFAULT_WORKSPACE}
 TEST_CASE_RUN="false"
+JSON_SUMMARY=${JSON_SUMMARY:-true}
 FILTER_REGEX_INCLUDE="${FILTER_REGEX_INCLUDE:-""}"
 export FILTER_REGEX_INCLUDE
 FILTER_REGEX_EXCLUDE="${FILTER_REGEX_EXCLUDE:-""}"
@@ -22,6 +23,12 @@ RAW_FILE_ARRAY=() # Array of all files that were changed
 #########################
 # Source Function Files #
 #########################
+if [ "${JSON_SUMMARY}" == "true" ]; then
+  OUTPUT_SOURCE="output_json.sh"
+else
+  OUTPUT_SOURCE="output.sh"
+fi
+export OUTPUT_SOURCE
 # Source log functions and variables early so we can use them ASAP
 # shellcheck source=/dev/null
 source /action/lib/functions/log.sh # Source the function script(s)
@@ -37,7 +44,7 @@ source /action/lib/functions/validation.sh # Source the function script(s)
 # shellcheck source=/dev/null
 source /action/lib/functions/worker.sh # Source the function script(s)
 # shellcheck source=/dev/null
-source /action/lib/functions/output.sh
+source /action/lib/functions/${OUTPUT_SOURCE}
 
 declare -l BASH_EXEC_IGNORE_LIBRARIES
 BASH_EXEC_IGNORE_LIBRARIES="${BASH_EXEC_IGNORE_LIBRARIES:-false}"
@@ -88,7 +95,7 @@ debug "Super-linter main output directory name: ${SUPER_LINTER_OUTPUT_DIRECTORY_
 
 SUPER_LINTER_PRIVATE_OUTPUT_DIRECTORY_PATH="/tmp/${DEFAULT_SUPER_LINTER_OUTPUT_DIRECTORY_NAME}"
 export SUPER_LINTER_PRIVATE_OUTPUT_DIRECTORY_PATH
-debug "Super-linter private output directory path: ${SUPER_LINTER_PRIVATE_OUTPUT_DIRECTORY_PATH}"
+info "Super-linter private output directory path: ${SUPER_LINTER_PRIVATE_OUTPUT_DIRECTORY_PATH}"
 mkdir -p "${SUPER_LINTER_PRIVATE_OUTPUT_DIRECTORY_PATH}"
 
 FIX_MODE_ENABLED="false"
@@ -114,6 +121,106 @@ source /action/lib/globals/linterRules.sh
 # shellcheck source=/dev/null
 source /action/lib/globals/languages.sh
 
+
+Footer() {
+  info "----------------------------------------------"
+  info "----------------------------------------------"
+
+  local ANY_LINTER_SUCCESS
+  ANY_LINTER_SUCCESS="false"
+
+  local SUPER_LINTER_EXIT_CODE
+  SUPER_LINTER_EXIT_CODE=0
+
+  if [[ "${SAVE_SUPER_LINTER_SUMMARY}" == "true" ]]; then
+    debug "Saving Super-linter summary to ${SUPER_LINTER_SUMMARY_OUTPUT_PATH}"
+    WriteSummaryHeader "${SUPER_LINTER_SUMMARY_OUTPUT_PATH}"
+  fi
+
+  for LANGUAGE in "${LANGUAGE_ARRAY[@]}"; do
+    # This used to be the count of errors found for a given LANGUAGE, but since
+    # after we switched to running linters against a batch of files, it may not
+    # represent the actual number of files that didn't pass the validation,
+    # but a number that's less than that because of how GNU parallel returns
+    # exit codes.
+    # Ref: https://www.gnu.org/software/parallel/parallel.html#exit-status
+    ERROR_COUNTER_FILE_PATH="${SUPER_LINTER_PRIVATE_OUTPUT_DIRECTORY_PATH}/super-linter-parallel-command-exit-code-${LANGUAGE}"
+    if [ ! -f "${ERROR_COUNTER_FILE_PATH}" ]; then
+      debug "Error counter ${ERROR_COUNTER_FILE_PATH} doesn't exist"
+    else
+      ERROR_COUNTER=$(<"${ERROR_COUNTER_FILE_PATH}")
+      debug "ERROR_COUNTER for ${LANGUAGE}: ${ERROR_COUNTER}"
+
+      if [[ ${ERROR_COUNTER} -ne 0 ]]; then
+        error "Errors found in ${LANGUAGE}"
+
+        if [[ "${SAVE_SUPER_LINTER_SUMMARY}" == "true" ]]; then
+          WriteSummaryLineFailure "${SUPER_LINTER_SUMMARY_OUTPUT_PATH}" "${LANGUAGE}"
+        fi
+
+        # Print stdout and stderr in case the log level is higher than INFO
+        # so users still get feedback. Print output as error so it gets emitted
+        if [[ "${LOG_VERBOSE}" != "true" ]]; then
+          local STDOUT_LINTER_FILE_PATH
+          STDOUT_LINTER_FILE_PATH="${SUPER_LINTER_PRIVATE_OUTPUT_DIRECTORY_PATH}/super-linter-parallel-stdout-${LANGUAGE}"
+          if [[ -e "${STDOUT_LINTER_FILE_PATH}" ]]; then
+            error "Stdout contents for ${LANGUAGE}:\n------\n$(cat "${STDOUT_LINTER_FILE_PATH}")\n------"
+          else
+            debug "Stdout output file path for ${LANGUAGE} (${STDOUT_LINTER_FILE_PATH}) doesn't exist"
+          fi
+
+          local STDERR_LINTER_FILE_PATH
+          STDERR_LINTER_FILE_PATH="${SUPER_LINTER_PRIVATE_OUTPUT_DIRECTORY_PATH}/super-linter-parallel-stderr-${LANGUAGE}"
+          if [[ -e "${STDERR_LINTER_FILE_PATH}" ]]; then
+            error "Stderr contents for ${LANGUAGE}:\n------\n$(cat "${STDERR_LINTER_FILE_PATH}")\n------"
+          else
+            debug "Stderr output file path for ${LANGUAGE} (${STDERR_LINTER_FILE_PATH}) doesn't exist"
+          fi
+        fi
+        SUPER_LINTER_EXIT_CODE=1
+        debug "Setting super-linter exit code to ${SUPER_LINTER_EXIT_CODE} because there were errors for ${LANGUAGE}"
+      elif [[ ${ERROR_COUNTER} -eq 0 ]]; then
+        notice "Successfully linted ${LANGUAGE}"
+        if [[ "${SAVE_SUPER_LINTER_SUMMARY}" == "true" ]]; then
+          WriteSummaryLineSuccess "${SUPER_LINTER_SUMMARY_OUTPUT_PATH}" "${LANGUAGE}"
+        fi
+        ANY_LINTER_SUCCESS="true"
+        debug "Set ANY_LINTER_SUCCESS to ${ANY_LINTER_SUCCESS} because ${LANGUAGE} reported a success"
+      fi
+    fi
+  done
+
+  if [[ "${ANY_LINTER_SUCCESS}" == "true" ]] && [[ ${SUPER_LINTER_EXIT_CODE} -ne 0 ]]; then
+    SUPER_LINTER_EXIT_CODE=2
+    debug "There was at least one linter that reported a success. Setting the super-linter exit code to: ${SUPER_LINTER_EXIT_CODE}"
+  fi
+
+  if [ "${DISABLE_ERRORS}" == "true" ]; then
+    warn "The super-linter exit code is ${SUPER_LINTER_EXIT_CODE}. Forcibly setting it to 0 because DISABLE_ERRORS is set to: ${DISABLE_ERRORS}"
+    SUPER_LINTER_EXIT_CODE=0
+  fi
+
+  if [[ ${SUPER_LINTER_EXIT_CODE} -eq 0 ]]; then
+    notice "All files and directories linted successfully"
+    if [[ "${SAVE_SUPER_LINTER_SUMMARY}" == "true" ]]; then
+      WriteSummaryFooterSuccess "${SUPER_LINTER_SUMMARY_OUTPUT_PATH}"
+    fi
+  else
+    error "Super-linter detected linting errors"
+    if [[ "${SAVE_SUPER_LINTER_SUMMARY}" == "true" ]]; then
+      WriteSummaryFooterFailure "${SUPER_LINTER_SUMMARY_OUTPUT_PATH}"
+    fi
+  fi
+
+  if [[ "${SAVE_SUPER_LINTER_SUMMARY}" == "true" ]]; then
+    if ! FormatSuperLinterSummaryFile "${SUPER_LINTER_SUMMARY_OUTPUT_PATH}"; then
+      fatal "Error while formatting the Super-linter summary file."
+    fi
+    debug "Super-linter summary file (${SUPER_LINTER_SUMMARY_OUTPUT_PATH}) contents:\n$(cat "${SUPER_LINTER_SUMMARY_OUTPUT_PATH}")"
+  fi
+
+  exit ${SUPER_LINTER_EXIT_CODE}
+}
 
 # shellcheck disable=SC2317
 cleanup() {
@@ -268,7 +375,7 @@ fi
 ###########################################
 # Build the list of files for each linter #
 ###########################################
-BuildFileList "${VALIDATE_ALL_CODEBASE}" "${TEST_CASE_RUN}"
+BuildFileList "${VALIDATE_ALL_CODEBASE}"
 
 #####################################
 # Run additional Installs as needed #
@@ -304,7 +411,7 @@ if [ "${LOG_DEBUG}" == "true" ]; then
   PARALLEL_COMMAND+=(--verbose)
 fi
 
-PARALLEL_COMMAND+=("LintCodebase" "{}" "\"${TEST_CASE_RUN}\"")
+PARALLEL_COMMAND+=("LintCodebase" "{}")
 debug "PARALLEL_COMMAND: ${PARALLEL_COMMAND[*]}"
 
 PARALLEL_COMMAND_OUTPUT=$(printf "%s\n" "${LANGUAGE_ARRAY[@]}" | "${PARALLEL_COMMAND[@]}" 2>&1)
@@ -313,10 +420,14 @@ debug "PARALLEL_COMMAND_OUTPUT when running linters (exit code: ${PARALLEL_COMMA
 debug "Parallel output file (${PARALLEL_RESULTS_FILE_PATH}) contents when running linters:\n$(cat "${PARALLEL_RESULTS_FILE_PATH}")"
 
 RESULTS_OBJECT=
-if ! RESULTS_OBJECT=$(jq --raw-output -n '[inputs]' "${PARALLEL_RESULTS_FILE_PATH}"); then
+if ! RESULTS_OBJECT=$(jq --raw-output -n '[inputs | select(.Stdout != "" or .Stderr != "")]' "${PARALLEL_RESULTS_FILE_PATH}"); then
   fatal "Error loading results when building the file list: ${RESULTS_OBJECT}"
 fi
 info "RESULTS_OBJECT when running linters:\n${RESULTS_OBJECT}"
+declare RESULTS_OBJECT_FILE_PATH
+RESULTS_OBJECT_FILE_PATH="${SUPER_LINTER_MAIN_OUTPUT_DIRECTORY_PATH}/super-linter-result-object.json"
+debug "RESULTS_OBJECT_FILE_PATH: ${RESULTS_OBJECT_FILE_PATH}"
+echo "${RESULTS_OBJECT}" > "${RESULTS_OBJECT_FILE_PATH}"
 
 # Get raw output so we can strip quotes from the data we load. Also, strip the final newline to avoid adding it two times
 if ! STDOUT_LINTERS="$(jq --raw-output '.[] | select(.Stdout[:-1] | length > 0) | .Stdout[:-1]' <<<"${RESULTS_OBJECT}")"; then
@@ -342,3 +453,9 @@ fi
 if [[ ${PARALLEL_COMMAND_RETURN_CODE} -ne 0 ]]; then
   fatal "Error when running linters. Exit code: ${PARALLEL_COMMAND_RETURN_CODE}"
 fi
+
+
+##########
+# Footer #
+##########
+Footer

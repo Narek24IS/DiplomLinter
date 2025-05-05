@@ -3,14 +3,16 @@ import json
 import os
 import pathlib
 import shlex
-import subprocess
 import tempfile
 
-from app.consumers.models import ProjectForLint
-from app.dependencies import get_logger
-from app.settings import get_settings
-from app.tools.urls import ProjectType, convert_url_to_project_name
-
+from ..consumers.models import ProjectForLint
+from ..db import crud
+from ..db.connection import SessionLocal
+from ..db.models import ScanStatus
+from ..db.schemas import LinterResultCreate
+from ..dependencies import get_logger
+from ..settings import get_settings
+from ..tools.urls import convert_url_to_project_name
 
 logger = get_logger("Super Linter")
 
@@ -32,7 +34,7 @@ class ProjectLogger:
 
 
 async def handle_async_process(
-    cmd: str, process: asyncio.subprocess.Process, project_logger: ProjectLogger, verbose: bool = False
+        cmd: str, process: asyncio.subprocess.Process, project_logger: ProjectLogger, verbose: bool = False
 ):
     """
     Ожидает завершения переданного процесса, выводит её результат
@@ -48,12 +50,12 @@ async def handle_async_process(
     await project_logger.info(f"Running command: {cmd}")
 
     stdout, _ = await process.communicate()
-    # if verbose:
-    if True:
+    if verbose:
+        # if True:
         output = await trim_command_output(stdout, project_logger)
         await project_logger.info(f"VERBOSE:\n{output}")
-    if process.returncode != 0:
-        raise subprocess.CalledProcessError(process.returncode or 2, cmd, stdout, None)
+    # if process.returncode != 0:
+    #     raise subprocess.CalledProcessError(process.returncode or 2, cmd, stdout, None)
 
 
 async def trim_command_output(output, project_logger: ProjectLogger):
@@ -77,7 +79,7 @@ async def trim_command_output(output, project_logger: ProjectLogger):
     return fmt_output
 
 
-async def start_local_lint(project: ProjectForLint):
+async def start_local_lint(project: ProjectForLint) -> dict[str:LinterResultCreate]:
     """
     Запускает линтинг проекта через локальную CLI утилиту.
 
@@ -92,7 +94,7 @@ async def start_local_lint(project: ProjectForLint):
     project_logger = ProjectLogger(project_name)
 
     try:
-        with tempfile.TemporaryDirectory() as tmp_dir:
+        with tempfile.TemporaryDirectory(delete=False) as tmp_dir:
             # Клонируем репозиторий
             clone_cmd = ["git", "clone", "--depth", "1", "--branch", branch, project.repository_url, tmp_dir]
             clone_process = await asyncio.create_subprocess_exec(
@@ -123,6 +125,7 @@ async def start_local_lint(project: ProjectForLint):
                 "FILTER_REGEX_EXCLUDE": ".idea",
                 "SAVE_SUPER_LINTER_OUTPUT": "true",
                 "SAVE_SUPER_LINTER_SUMMARY": "true",
+                "JSON_SUMMARY": "true",
                 "SUPER_LINTER_OUTPUT_DIRECTORY_NAME": output_dir_name,
             }
 
@@ -138,18 +141,80 @@ async def start_local_lint(project: ProjectForLint):
             await handle_async_process(shlex.join(lint_cmd), lint_process, project_logger, settings.app_debug)
 
             # Обработка результатов
-            results_file = output_dir / "super-linter-results.json"
+            output_file = output_dir / "super-linter/super-linter-results.json"
+            if output_file.exists():
+                await project_logger.info(f"Linting output: {output_file.read_text()}")
+
+            results_file = output_dir / "super-linter-result-object.json"
             if results_file.exists():
                 results = json.loads(results_file.read_text())
-                await project_logger.info(f"Linting results: {json.dumps(results, indent=2)}")
+                if results:
+                    await project_logger.info(f"Linting results: {json.dumps(results, indent=2)}")
+            else:
+                results = {}
 
             summary_file = output_dir / "super-linter-summary.md"
             if summary_file.exists():
-                summary = summary_file.read_text()
-                await project_logger.info(f"Linting summary:\n{summary}")
+                summary = json.loads(summary_file.read_text())
+                if summary:
+                    await project_logger.info(f"Linting summary:\n{json.dumps(summary, indent=2)}")
+            else:
+                summary = {}
+
+            linting_result: dict[str:LinterResultCreate] = dict()
+            for result in summary:
+                linter = result.get("linter", "")
+                if linter:
+                    linting_result[linter] = LinterResultCreate(
+                        linter_name=linter,
+                        is_success=result.get("is_success", False),
+                    )
+
+            for result in results:
+                linter = result.pop("V", [None])[0]
+                if linter:
+                    obj = linting_result[linter]
+                    obj.output = f"STDOUT: {result.pop('Stdout', '')}\nSTDERR: {result.pop('Stderr', '')}"
+                    obj.details = result
 
             await project_logger.info("Linting completed successfully.")
 
+            return linting_result
     except Exception as e:
         await project_logger.error(f"Error during linting: {type(e).__name__} {e}")
         raise
+
+
+async def run_linting(scan_id: int, repo_url: str, branch: str):
+    db = SessionLocal()
+    try:
+        # Обновляем статус сканирования
+        crud.update_scan_status(db, scan_id=scan_id, status=ScanStatus.IN_PROGRESS)
+
+        # Запускаем линтинг (ваша реализация из вопроса)
+        lint_results: dict[str:LinterResultCreate] = await start_local_lint(ProjectForLint(
+            id=scan_id,
+            repository_url=repo_url,
+            branch_name=branch,
+        ))
+
+        # Сохраняем результаты
+        for result in lint_results.values():
+            result: LinterResultCreate
+            crud.create_linter_result(
+                db,
+                scan_id=scan_id,
+                result=result
+            )
+
+        crud.update_scan_status(
+            db,
+            scan_id=scan_id,
+            status=ScanStatus.COMPLETED,
+        )
+
+    except Exception as e:
+        await logger.error(f"Error during linting scan {scan_id}: {str(e)}")
+        crud.update_scan_status(db, scan_id=scan_id, status=ScanStatus.FAILED)
+    finally:
+        db.close()

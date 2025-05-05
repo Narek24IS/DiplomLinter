@@ -1,7 +1,7 @@
 from starlette.requests import Request
 
-from app.consumers.rabbitmq import RabbitConsumer
-from app.settings import Settings
+from ..consumers.rabbitmq import RabbitConsumer
+from ..settings import Settings
 
 
 def setup_consumers(app, settings: Settings):

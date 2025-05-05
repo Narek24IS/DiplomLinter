@@ -4,7 +4,7 @@ import aio_pika
 from aio_pika import DeliveryMode
 from structlog.stdlib import AsyncBoundLogger
 
-from app.dependencies import get_logger
+from ..dependencies import get_logger
 
 logger: AsyncBoundLogger = get_logger("RabbitPublisher")
 

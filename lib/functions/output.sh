@@ -26,7 +26,7 @@ WriteSummaryLineFailure() {
 WriteSummaryFooterSuccess() {
   local SUPER_LINTER_SUMMARY_OUTPUT_PATH="${1}"
   {
-    echo ""
+    echo "| -------- | ----------------- |"
     echo "All files and directories linted successfully"
   } >>"${SUPER_LINTER_SUMMARY_OUTPUT_PATH}"
 }
@@ -34,7 +34,7 @@ WriteSummaryFooterSuccess() {
 WriteSummaryFooterFailure() {
   local SUPER_LINTER_SUMMARY_OUTPUT_PATH="${1}"
   {
-    echo ""
+    echo "| -------- | ----------------- |"
     echo "Super-linter detected linting errors"
   } >>"${SUPER_LINTER_SUMMARY_OUTPUT_PATH}"
 }

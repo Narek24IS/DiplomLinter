@@ -1,6 +1,6 @@
 import asyncio
+import json
 import time
-from asyncio import sleep
 from dataclasses import dataclass, field
 
 import aio_pika
@@ -14,11 +14,13 @@ from fastapi import FastAPI
 from pydantic import ValidationError
 from structlog.stdlib import AsyncBoundLogger
 
-from app.consumers.models import ProjectForLint, ProjectLintResult
-from app.dependencies import get_logger
-from app.linting.linter_runner import start_local_lint
-from app.settings import get_settings
-from app.tools.urls import ProjectType, convert_url_to_project_name
+from ..consumers.models import ProjectForLint, ProjectLintResult
+from ..db import crud
+from ..db.connection import get_db
+from ..dependencies import get_logger
+from ..linting.linter_runner import start_local_lint
+from ..settings import get_settings
+from ..tools.urls import ProjectType, convert_url_to_project_name
 
 
 @dataclass
@@ -116,23 +118,21 @@ class RabbitConsumer:
             await message.reject(requeue=False)
             return
         project_name = convert_url_to_project_name(message_data.repository_url, ProjectType.CLI)
+        db = get_db()
         try:
-            project_id = 1 #TODO
+            project_id = crud.get_project_by_name(db=db, project_name=project_name)
             if project_id is None:
                 raise Exception("Can't create or get project ID.")
 
-            await self.start_project_lint(message_data)
-
-            sca_url = ""#TODO
-            policy_alerts = ""#TODO
+            result = await self.start_project_lint(message_data)
 
             res = ProjectLintResult(
                 task_id=message_data.id,
                 repository_url=message_data.repository_url,
                 sca_result_url=sca_url,
-                error="Policy Alert: Blocker policy alert was found" if policy_alerts else "",
+                error=json.dumps(result),
             )
-            await self.logger.info(f"[{project_name}] SCA result: {res}")
+            await self.logger.info(f"[{project_name}] Lint result: {res}")
             await self.app.rabbit_sca_publisher.publish(res.model_dump())  # type: ignore
             await message.ack()
         except Exception as e:
@@ -162,8 +162,7 @@ class RabbitConsumer:
         attempts = 0
         while attempts < self.max_retries:
             try:
-                await start_local_lint(project)
-                return
+                return await start_local_lint(project)
             except Exception as e:
                 attempts += 1
                 await self.logger.warning(
@@ -177,29 +176,3 @@ class RabbitConsumer:
                     )
                     raise e
                 await asyncio.sleep(3 * attempts)
-
-    async def wait_lint_results(self, project_id: int) -> str:
-        """
-        Ожидает завершения сканирования проекта и возвращает его результат
-        или ошибку таймаута.
-
-        :param project_id: Идентификатор проекта.
-        :return: Пустая строка, если сканирование не нашло замечаний и окончилось за 15 минут
-        """
-        settings = get_settings()
-        timeout_at = time.time() + settings.lint_wait_timeout
-
-        while time.time() < timeout_at:
-            status = ""#TODO
-            await self.logger.debug(f"Code lint status for project with id {project_id}: {status}")
-
-            if status == "":#TODO
-                policy_alerts = ""#TODO
-                if policy_alerts:
-                    return "Policy Alert: Blocker policy alert was found"
-                return ""
-
-            await asyncio.sleep(settings.time_between_checks)
-
-        await self.logger.warning(f"Timeout while waiting for lint results for project with id {project_id}")
-        raise TimeoutError("The lint didn’t finish in time")

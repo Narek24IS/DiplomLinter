@@ -3,11 +3,17 @@ from fastapi import FastAPI, Request, Response
 from fastapi.exceptions import RequestValidationError
 from fastapi.responses import JSONResponse
 
-from app.api import exceptions, router
-from app.consumers.setup import setup_consumers
-from app.publishers.setup import setup_publishers
-from app.settings import Settings
-from logger import configure_logger
+from .api import exceptions
+from .api.routers import (users,
+                             technical,
+                             projects,
+                             scans,
+                             linter_results)
+from .consumers.setup import setup_consumers
+from .db.setup import setup_db
+from .publishers.setup import setup_publishers
+from .settings import Settings
+from .logger import configure_logger
 
 
 def get_app() -> FastAPI:
@@ -26,9 +32,16 @@ def get_app() -> FastAPI:
         title="Super Linter",
         version=settings.app_version,
         root_path=settings.base_path.rstrip("/"),
+        generate_unique_id_function=lambda route: f"{route.name}"
     )
-    app.include_router(router)
+    # Подключаем роутеры
+    app.include_router(technical.router)
+    app.include_router(users.router)
+    app.include_router(projects.router)
+    app.include_router(scans.router)
+    app.include_router(linter_results.router)
 
+    setup_db(app)
     setup_consumers(app, settings)
     setup_publishers(app, settings)
 

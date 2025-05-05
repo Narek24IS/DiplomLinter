@@ -531,7 +531,7 @@ RUN pip install --no-cache-dir -r requirements.txt
 
 COPY lib /action/lib
 
-COPY ./src /code/
-RUN chmod +x /code/app/tools/create_id_rsa.sh /code/app/tools/tmp_cleanup.sh /code/app/tools/entrypoint.sh
+COPY src /src/
+RUN chmod +x /src/app/tools/create_id_rsa.sh /src/app/tools/tmp_cleanup.sh /src/app/tools/entrypoint.sh
 
-ENTRYPOINT [ "/code/app/tools/entrypoint.sh" ]
+ENTRYPOINT [ "/src/app/tools/entrypoint.sh" ]

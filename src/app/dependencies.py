@@ -1,5 +1,5 @@
 import structlog
-from logger import get_async_logger
+from .logger import get_async_logger
 
 
 def get_logger(

@@ -6,8 +6,6 @@ function BuildFileList() {
   VALIDATE_ALL_CODEBASE="${1}"
   debug "VALIDATE_ALL_CODEBASE: ${VALIDATE_ALL_CODEBASE}"
 
-  TEST_CASE_RUN="${2}"
-
   debug "Populating the file list with all the files in the ${GITHUB_WORKSPACE} workspace using FIND algorithm"
   if ! mapfile -t RAW_FILE_ARRAY < <(find "${GITHUB_WORKSPACE}" \
     -not \( -path '*/\.git' -prune \) \
@@ -81,7 +79,7 @@ function BuildFileList() {
   PARALLEL_COMMAND_OUTPUT=$(printf "%s\n" "${RAW_FILE_ARRAY[@]}" | "${PARALLEL_COMMAND[@]}" 2>&1)
   PARALLEL_COMMAND_RETURN_CODE=$?
   debug "PARALLEL_COMMAND_OUTPUT to build the file list (exit code: ${PARALLEL_COMMAND_RETURN_CODE}):\n${PARALLEL_COMMAND_OUTPUT}"
-  debug "Parallel output file (${PARALLEL_RESULTS_FILE_PATH}) contents when building the file list:\n$(cat "${PARALLEL_RESULTS_FILE_PATH}")"
+  info "Parallel output file (${PARALLEL_RESULTS_FILE_PATH}) contents when building the file list:\n$(cat "${PARALLEL_RESULTS_FILE_PATH}")"
 
   local RESULTS_OBJECT
   RESULTS_OBJECT=

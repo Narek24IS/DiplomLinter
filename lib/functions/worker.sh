@@ -3,8 +3,6 @@
 function LintCodebase() {
   local FILE_TYPE
   FILE_TYPE="${1}" && shift
-  local TEST_CASE_RUN
-  TEST_CASE_RUN="${1}" && shift
 
   declare -n VALIDATE_LANGUAGE
   VALIDATE_LANGUAGE="VALIDATE_${FILE_TYPE}"
@@ -34,13 +32,9 @@ function LintCodebase() {
   fi
 
   if [[ "${#FILE_ARRAY[@]}" -eq 0 ]]; then
-    if [[ "${TEST_CASE_RUN}" == "false" ]]; then
-      debug "There are no items to lint for ${FILE_TYPE}"
-      unset -n FILE_ARRAY
-      return 0
-    else
-      fatal "Cannot find any tests for ${FILE_TYPE}"
-    fi
+    debug "There are no items to lint for ${FILE_TYPE}"
+    unset -n FILE_ARRAY
+    return 0
   else
     debug "There are ${#FILE_ARRAY[@]} items to lint for ${FILE_TYPE}: ${FILE_ARRAY[*]}"
   fi
@@ -150,9 +144,9 @@ function LintCodebase() {
   echo ${PARALLEL_COMMAND_RETURN_CODE} >"${SUPER_LINTER_PRIVATE_OUTPUT_DIRECTORY_PATH}/super-linter-parallel-command-exit-code-${FILE_TYPE}"
 
   if [ ${PARALLEL_COMMAND_RETURN_CODE} -ne 0 ]; then
-    debug "[error] Found errors when linting ${FILE_TYPE}. Exit code: ${PARALLEL_COMMAND_RETURN_CODE}."
+    info "[error] Found errors when linting ${FILE_TYPE}. Exit code: ${PARALLEL_COMMAND_RETURN_CODE}."
   else
-    debug "${FILE_TYPE} linted successfully"
+    info "${FILE_TYPE} linted successfully"
   fi
 
   local RESULTS_OBJECT
@@ -178,10 +172,10 @@ function LintCodebase() {
 
   # Load output functions because we might need to process stdout and stderr
   # shellcheck source=/dev/null
-  source /action/lib/functions/output.sh
+  source /action/lib/functions/${OUTPUT_SOURCE}
 
   if [ -n "${STDOUT_LINTER}" ]; then
-    debug "Command output for ${FILE_TYPE}:\n------\n${STDOUT_LINTER}\n------"
+    info "Command output for ${FILE_TYPE}:\n------\n${STDOUT_LINTER}\n------"
 
     local STDOUT_LINTER_FILE_PATH
     STDOUT_LINTER_FILE_PATH="${SUPER_LINTER_PRIVATE_OUTPUT_DIRECTORY_PATH}/super-linter-parallel-stdout-${FILE_TYPE}"
@@ -201,7 +195,7 @@ function LintCodebase() {
   fi
 
   if [ -n "${STDERR_LINTER}" ]; then
-    debug "Stderr contents for ${FILE_TYPE}:\n------\n${STDERR_LINTER}\n------"
+    info "Stderr contents for ${FILE_TYPE}:\n------\n${STDERR_LINTER}\n------"
 
     local STDERR_LINTER_FILE_PATH
     STDERR_LINTER_FILE_PATH="${SUPER_LINTER_PRIVATE_OUTPUT_DIRECTORY_PATH}/super-linter-parallel-stderr-${FILE_TYPE}"

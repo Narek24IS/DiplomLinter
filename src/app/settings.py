@@ -28,8 +28,15 @@ class Settings(BaseSettings):
     lint_wait_timeout: int = 60 * 15
     time_between_checks: int = 10
 
+    # db
+    db_username: str = "root"
+    db_password: str = "root"
+    db_host: str = "database"
+    db_port: int = 5432
+    db_name: str = "linter"
+
     # rmq
-    rmq_dsn: str = "amqp://guest:guest@127.0.0.1:5672/"
+    rmq_dsn: str = "amqp://guest:guest@rabbitmq:5672/"
     # request queue
     rmq_req_queue: str = "default_req_queue"
     rmq_req_exchange: str = "default_req_exchange"

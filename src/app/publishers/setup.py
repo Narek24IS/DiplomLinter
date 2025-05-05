@@ -1,8 +1,8 @@
 from aio_pika import ExchangeType
 from starlette.requests import Request
 
-from app.publishers.rabbitmq import RabbitPublisher
-from app.settings import Settings
+from ..publishers.rabbitmq import RabbitPublisher
+from ..settings import Settings
 
 
 def setup_publishers(app, settings: Settings):
