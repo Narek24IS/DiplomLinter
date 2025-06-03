@@ -28,9 +28,9 @@ class User(BaseModel):
     User
     """ # noqa: E501
     username: StrictStr
-    id: StrictInt
+    user_id: StrictInt
     created_at: datetime
-    __properties: ClassVar[List[str]] = ["username", "id", "created_at"]
+    __properties: ClassVar[List[str]] = ["username", "user_id", "created_at"]
 
     model_config = ConfigDict(
         populate_by_name=True,
@@ -84,7 +84,7 @@ class User(BaseModel):
 
         _obj = cls.model_validate({
             "username": obj.get("username"),
-            "id": obj.get("id"),
+            "user_id": obj.get("user_id"),
             "created_at": obj.get("created_at")
         })
         return _obj

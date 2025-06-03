@@ -16,15 +16,15 @@ components:
           - type: object
           - type: 'null'
           title: Details
-        id:
-          title: Id
-          type: integer
         is_success:
           title: Is Success
           type: boolean
         linter_name:
           title: Linter Name
           type: string
+        linter_result_id:
+          title: Linter Result Id
+          type: integer
         output:
           anyOf:
           - type: string
@@ -36,7 +36,7 @@ components:
       required:
       - linter_name
       - is_success
-      - id
+      - linter_result_id
       - scan_id
       title: LinterResult
       type: object
@@ -63,14 +63,14 @@ components:
           format: date-time
           title: Created At
           type: string
-        id:
-          title: Id
-          type: integer
         name:
           title: Name
           type: string
         owner_id:
           title: Owner Id
+          type: integer
+        project_id:
+          title: Project Id
           type: integer
         repository_url:
           title: Repository Url
@@ -78,7 +78,7 @@ components:
       required:
       - name
       - repository_url
-      - id
+      - project_id
       - created_at
       - owner_id
       title: Project
@@ -106,14 +106,14 @@ components:
           format: date-time
           title: Created At
           type: string
-        id:
-          title: Id
-          type: integer
         name:
           title: Name
           type: string
         owner_id:
           title: Owner Id
+          type: integer
+        project_id:
+          title: Project Id
           type: integer
         repository_url:
           title: Repository Url
@@ -126,7 +126,7 @@ components:
       required:
       - name
       - repository_url
-      - id
+      - project_id
       - created_at
       - owner_id
       - scans
@@ -143,11 +143,11 @@ components:
             type: string
           - type: 'null'
           title: Finished At
-        id:
-          title: Id
-          type: integer
         project_id:
           title: Project Id
+          type: integer
+        scan_id:
+          title: Scan Id
           type: integer
         started_at:
           format: date-time
@@ -166,24 +166,11 @@ components:
           type: integer
       required:
       - branch
-      - id
+      - scan_id
       - project_id
       - status
       - started_at
       title: Scan
-      type: object
-    ScanCreate:
-      properties:
-        branch:
-          title: Branch
-          type: string
-        project_id:
-          title: Project Id
-          type: integer
-      required:
-      - branch
-      - project_id
-      title: ScanCreate
       type: object
     ScanWithResults:
       properties:
@@ -196,9 +183,6 @@ components:
             type: string
           - type: 'null'
           title: Finished At
-        id:
-          title: Id
-          type: integer
         linter_results:
           items:
             $ref: '#/components/schemas/LinterResult'
@@ -206,6 +190,9 @@ components:
           type: array
         project_id:
           title: Project Id
+          type: integer
+        scan_id:
+          title: Scan Id
           type: integer
         started_at:
           format: date-time
@@ -224,7 +211,7 @@ components:
           type: integer
       required:
       - branch
-      - id
+      - scan_id
       - project_id
       - status
       - started_at
@@ -237,15 +224,15 @@ components:
           format: date-time
           title: Created At
           type: string
-        id:
-          title: Id
+        user_id:
+          title: User Id
           type: integer
         username:
           title: Username
           type: string
       required:
       - username
-      - id
+      - user_id
       - created_at
       title: User
       type: object
@@ -298,6 +285,12 @@ paths:
         schema:
           title: Scan Id
           type: integer
+      - in: header
+        name: Authorization
+        required: true
+        schema:
+          title: Authorization
+          type: string
       responses:
         '200':
           content:
@@ -327,6 +320,12 @@ paths:
         schema:
           title: Scan Id
           type: integer
+      - in: header
+        name: Authorization
+        required: true
+        schema:
+          title: Authorization
+          type: string
       responses:
         '200':
           content:
@@ -356,6 +355,12 @@ paths:
         schema:
           title: Linter Result Id
           type: integer
+      - in: header
+        name: Authorization
+        required: true
+        schema:
+          title: Authorization
+          type: string
       responses:
         '200':
           content:
@@ -393,6 +398,12 @@ paths:
           default: 100
           title: Limit
           type: integer
+      - in: header
+        name: Authorization
+        required: true
+        schema:
+          title: Authorization
+          type: string
       responses:
         '200':
           content:
@@ -446,6 +457,12 @@ paths:
         schema:
           title: Project Id
           type: integer
+      - in: header
+        name: Authorization
+        required: true
+        schema:
+          title: Authorization
+          type: string
       responses:
         '200':
           content:
@@ -471,6 +488,12 @@ paths:
         required: true
         schema:
           title: Project Name
+          type: string
+      - in: header
+        name: Authorization
+        required: true
+        schema:
+          title: Authorization
           type: string
       responses:
         '200':
@@ -506,6 +529,12 @@ paths:
           default: 100
           title: Limit
           type: integer
+      - in: header
+        name: Authorization
+        required: true
+        schema:
+          title: Authorization
+          type: string
       responses:
         '200':
           content:
@@ -523,30 +552,6 @@ paths:
                 $ref: '#/components/schemas/HTTPValidationError'
           description: Validation Error
       summary: Get Scans
-      tags:
-      - scans
-    post:
-      operationId: create_scan
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/ScanCreate'
-        required: true
-      responses:
-        '200':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Scan'
-          description: Successful Response
-        '422':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/HTTPValidationError'
-          description: Validation Error
-      summary: Create Scan
       tags:
       - scans
   /scans/project/{project_id}:
@@ -573,6 +578,12 @@ paths:
           default: 100
           title: Limit
           type: integer
+      - in: header
+        name: Authorization
+        required: true
+        schema:
+          title: Authorization
+          type: string
       responses:
         '200':
           content:
@@ -608,6 +619,12 @@ paths:
         schema:
           title: Branch
           type: string
+      - in: header
+        name: Authorization
+        required: true
+        schema:
+          title: Authorization
+          type: string
       responses:
         '200':
           content:
@@ -634,6 +651,12 @@ paths:
         schema:
           title: Scan Id
           type: integer
+      - in: header
+        name: Authorization
+        required: true
+        schema:
+          title: Authorization
+          type: string
       responses:
         '200':
           content:

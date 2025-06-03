@@ -68,10 +68,11 @@ with linter_api_client.ApiClient(configuration) as api_client:
     # Create an instance of the API class
     api_instance = linter_api_client.LinterResultsApi(api_client)
     linter_result_id = 56 # int | 
+    authorization = 'authorization_example' # str | 
 
     try:
         # Get Linter Results
-        api_response = api_instance.get_linter_results(linter_result_id)
+        api_response = api_instance.get_linter_results(linter_result_id, authorization)
         print("The response of LinterResultsApi->get_linter_results:\n")
         pprint(api_response)
     except ApiException as e:
@@ -92,7 +93,6 @@ Class | Method | HTTP request | Description
 *ProjectsApi* | [**get_project_by_id**](docs/ProjectsApi.md#get_project_by_id) | **GET** /projects/by_id/{project_id} | Get Project By Id
 *ProjectsApi* | [**get_project_by_name**](docs/ProjectsApi.md#get_project_by_name) | **GET** /projects/by_name/{project_name} | Get Project By Name
 *ProjectsApi* | [**get_projects**](docs/ProjectsApi.md#get_projects) | **GET** /projects/ | Get Projects
-*ScansApi* | [**create_scan**](docs/ScansApi.md#create_scan) | **POST** /scans/ | Create Scan
 *ScansApi* | [**get_project_scans**](docs/ScansApi.md#get_project_scans) | **GET** /scans/project/{project_id} | Get Project Scans
 *ScansApi* | [**get_scan**](docs/ScansApi.md#get_scan) | **GET** /scans/{scan_id} | Get Scan
 *ScansApi* | [**get_scans**](docs/ScansApi.md#get_scans) | **GET** /scans/ | Get Scans
@@ -113,7 +113,6 @@ Class | Method | HTTP request | Description
  - [ProjectCreate](docs/ProjectCreate.md)
  - [ProjectWithScans](docs/ProjectWithScans.md)
  - [Scan](docs/Scan.md)
- - [ScanCreate](docs/ScanCreate.md)
  - [ScanWithResults](docs/ScanWithResults.md)
  - [User](docs/User.md)
  - [UserCreate](docs/UserCreate.md)

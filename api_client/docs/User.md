@@ -6,7 +6,7 @@
 Name | Type | Description | Notes
 ------------ | ------------- | ------------- | -------------
 **username** | **str** |  | 
-**id** | **int** |  | 
+**user_id** | **int** |  | 
 **created_at** | **datetime** |  | 
 
 ## Example

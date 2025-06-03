@@ -11,7 +11,6 @@ from linter_api_client.api import (
 from linter_api_client.models import (
     UserCreate,
     ProjectCreate,
-    ScanCreate
 )
 
 def full_flow():
@@ -19,6 +18,9 @@ def full_flow():
     config = Configuration(host="http://localhost:8000")
     token = "test_token_123"
     project_name = "Paginator Bot"
+    repo_url = "https://github.com/Narek24IS/PaginatorBot.git"
+    project_name = "Cure Bot"
+    repo_url = "https://github.com/Narek24IS/CuteBot.git"
     with ApiClient(config) as api_client:
         users_api = UsersApi(api_client)
         projects_api = ProjectsApi(api_client)
@@ -34,42 +36,43 @@ def full_flow():
                     token=token
                 )
             )
-            print(f"✅ Пользователь создан: {user.id} {user.username}")
+            print(f"✅ Пользователь создан: {user.user_id} {user.username}")
         except ApiException as e:
             user = users_api.get_user_by_token(token)
-            print(f"✅ Пользователь получен: {user.id} {user.username}")
-
+            print(f"✅ Пользователь получен: {user.user_id} {user.username}")
+        token = "Bearer " + token
         try:
             # 3. Создаем проект
             print("\n⏳ Создаем проект...")
             project = projects_api.create_project(
                 project_create=ProjectCreate(
                     name=project_name,
-                    repository_url="https://github.com/Narek24IS/PaginatorBot.git",
+                    repository_url=repo_url,
                     token="test_token_123"
                 )
             )
-            print(f"✅ Проект создан: {project.id} {project.name}")
+            print(f"✅ Проект создан: {project.project_id} {project.name}")
         except Exception as e:
             try:
-                project = projects_api.get_project_by_name(project_name)
-                print(f"✅ Проект создан: {project.id} {project.name}")
+                project = projects_api.get_project_by_name(project_name, token)
+                print(f"✅ Проект создан: {project.project_id} {project.name}")
             except Exception as e:
-                print(e.body)
+                print(e)
                 raise e
 
         # 4. Запускаем сканирование
         print("\n⏳ Запускаем сканирование...")
         scan = scans_api.start_scan(
-            project_id=project.id,
+            project_id=project.project_id,
             branch="master",
+            authorization=token
         )
-        print(f"✅ Сканирование запущено: {scan.id}")
+        print(f"✅ Сканирование запущено: {scan.scan_id}")
 
         # 5. Ждем завершения сканирования (опционально)
         print("\n⏳ Ожидаем завершения сканирования...")
         while True:
-            current_scan = scans_api.get_scan(scan.id)
+            current_scan = scans_api.get_scan(scan.scan_id, authorization=token)
             if current_scan.status == "completed":
                 break
             elif current_scan.status == "failed":
@@ -80,14 +83,14 @@ def full_flow():
 
         # 6. Получаем результаты
         print("\n⏳ Получаем результаты сканирования...")
-        results = results_api.get_scan_results(scan.id)
+        results = results_api.get_scan_results(scan.scan_id, authorization=token)
         print(f"✅ Получено {len(results)} результатов:")
         for result in results:
             print(f"  - {result.linter_name}: {'✅' if result.is_success else '❌'}")
 
         # 7. Получаем аналитику
         print("\n⏳ Получаем аналитику...")
-        stats = results_api.get_scan_stats(scan.id)
+        stats = results_api.get_scan_stats(scan.scan_id, authorization=token)
         print("📊 Статистика по линтерам:")
         for stat in stats:
             print(
@@ -98,7 +101,7 @@ def full_flow():
 
         # 8. Получаем информацию о проекте
         print("\n⏳ Получаем полную информацию о проекте...")
-        full_project = projects_api.get_project_by_id(project.id)
+        full_project = projects_api.get_project_by_id(project.project_id, authorization=token)
         print(f"📂 Проект: {full_project.name}")
         print(f"🔗 URL: {full_project.repository_url}")
         print(f"🔄 Всего сканирований: {len(full_project.scans)}")

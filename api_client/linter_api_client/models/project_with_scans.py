@@ -30,11 +30,11 @@ class ProjectWithScans(BaseModel):
     """ # noqa: E501
     name: StrictStr
     repository_url: StrictStr
-    id: StrictInt
+    project_id: StrictInt
     created_at: datetime
     owner_id: StrictInt
     scans: List[Scan]
-    __properties: ClassVar[List[str]] = ["name", "repository_url", "id", "created_at", "owner_id", "scans"]
+    __properties: ClassVar[List[str]] = ["name", "repository_url", "project_id", "created_at", "owner_id", "scans"]
 
     model_config = ConfigDict(
         populate_by_name=True,
@@ -96,7 +96,7 @@ class ProjectWithScans(BaseModel):
         _obj = cls.model_validate({
             "name": obj.get("name"),
             "repository_url": obj.get("repository_url"),
-            "id": obj.get("id"),
+            "project_id": obj.get("project_id"),
             "created_at": obj.get("created_at"),
             "owner_id": obj.get("owner_id"),
             "scans": [Scan.from_dict(_item) for _item in obj["scans"]] if obj.get("scans") is not None else None

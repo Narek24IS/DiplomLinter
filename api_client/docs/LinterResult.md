@@ -9,7 +9,7 @@ Name | Type | Description | Notes
 **is_success** | **bool** |  | 
 **output** | **str** |  | [optional] 
 **details** | **object** |  | [optional] 
-**id** | **int** |  | 
+**linter_result_id** | **int** |  | 
 **scan_id** | **int** |  | 
 
 ## Example

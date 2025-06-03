@@ -19,7 +19,7 @@ Base = declarative_base()
 class User(Base):
     __tablename__ = "users"
 
-    id = Column(Integer, primary_key=True)
+    user_id = Column(Integer, primary_key=True)
     username = Column(String(50), unique=True, nullable=False)
     token = Column(String(100), unique=True)
     created_at = Column(DateTime, default=datetime.now)
@@ -33,11 +33,11 @@ class Project(Base):
         UniqueConstraint('repository_url', name='uq_repository_url'),
     )
 
-    id = Column(Integer, primary_key=True)
+    project_id = Column(Integer, primary_key=True)
     repository_url = Column(String(500), nullable=False)
     name = Column(String(100), nullable=False)
     created_at = Column(DateTime, default=datetime.now)
-    owner_id = Column(Integer, ForeignKey("users.id"))
+    owner_id = Column(Integer, ForeignKey("users.user_id"))
 
     owner = relationship("User", back_populates="projects")
     scans = relationship("Scan", back_populates="project")
@@ -57,8 +57,8 @@ class Scan(Base):
         Index("ix_scans_status", "status"),
     )
 
-    id = Column(Integer, primary_key=True)
-    project_id = Column(Integer, ForeignKey("projects.id"), nullable=False)
+    scan_id = Column(Integer, primary_key=True)
+    project_id = Column(Integer, ForeignKey("projects.project_id"), nullable=False)
     status = Column(String(20), default=ScanStatus.PENDING, nullable=False)
     started_at = Column(DateTime, default=datetime.now)
     finished_at = Column(DateTime)
@@ -77,8 +77,8 @@ class LinterResult(Base):
         Index("ix_linter_results_scan_id", "scan_id"),
     )
 
-    id = Column(Integer, primary_key=True)
-    scan_id = Column(Integer, ForeignKey("scans.id"), nullable=False)
+    linter_result_id = Column(Integer, primary_key=True)
+    scan_id = Column(Integer, ForeignKey("scans.scan_id"), nullable=False)
     linter_name = Column(String(50), nullable=False)
     is_success = Column(Boolean, nullable=False)
     output = Column(Text)

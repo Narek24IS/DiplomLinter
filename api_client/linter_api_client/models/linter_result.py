@@ -30,9 +30,9 @@ class LinterResult(BaseModel):
     is_success: StrictBool
     output: Optional[StrictStr] = None
     details: Optional[Dict[str, Any]] = None
-    id: StrictInt
+    linter_result_id: StrictInt
     scan_id: StrictInt
-    __properties: ClassVar[List[str]] = ["linter_name", "is_success", "output", "details", "id", "scan_id"]
+    __properties: ClassVar[List[str]] = ["linter_name", "is_success", "output", "details", "linter_result_id", "scan_id"]
 
     model_config = ConfigDict(
         populate_by_name=True,
@@ -99,7 +99,7 @@ class LinterResult(BaseModel):
             "is_success": obj.get("is_success"),
             "output": obj.get("output"),
             "details": obj.get("details"),
-            "id": obj.get("id"),
+            "linter_result_id": obj.get("linter_result_id"),
             "scan_id": obj.get("scan_id")
         })
         return _obj

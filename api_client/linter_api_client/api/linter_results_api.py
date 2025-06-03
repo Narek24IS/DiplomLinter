@@ -16,7 +16,7 @@ from pydantic import validate_call, Field, StrictFloat, StrictStr, StrictInt
 from typing import Any, Dict, List, Optional, Tuple, Union
 from typing_extensions import Annotated
 
-from pydantic import StrictInt
+from pydantic import StrictInt, StrictStr
 from typing import List
 from linter_api_client.models.linter_result import LinterResult
 from linter_api_client.models.linter_stats import LinterStats
@@ -43,6 +43,7 @@ class LinterResultsApi:
     def get_linter_results(
         self,
         linter_result_id: StrictInt,
+        authorization: StrictStr,
         _request_timeout: Union[
             None,
             Annotated[StrictFloat, Field(gt=0)],
@@ -61,6 +62,8 @@ class LinterResultsApi:
 
         :param linter_result_id: (required)
         :type linter_result_id: int
+        :param authorization: (required)
+        :type authorization: str
         :param _request_timeout: timeout setting for this request. If one
                                  number provided, it will be total request
                                  timeout. It can also be a pair (tuple) of
@@ -85,6 +88,7 @@ class LinterResultsApi:
 
         _param = self._get_linter_results_serialize(
             linter_result_id=linter_result_id,
+            authorization=authorization,
             _request_auth=_request_auth,
             _content_type=_content_type,
             _headers=_headers,
@@ -110,6 +114,7 @@ class LinterResultsApi:
     def get_linter_results_with_http_info(
         self,
         linter_result_id: StrictInt,
+        authorization: StrictStr,
         _request_timeout: Union[
             None,
             Annotated[StrictFloat, Field(gt=0)],
@@ -128,6 +133,8 @@ class LinterResultsApi:
 
         :param linter_result_id: (required)
         :type linter_result_id: int
+        :param authorization: (required)
+        :type authorization: str
         :param _request_timeout: timeout setting for this request. If one
                                  number provided, it will be total request
                                  timeout. It can also be a pair (tuple) of
@@ -152,6 +159,7 @@ class LinterResultsApi:
 
         _param = self._get_linter_results_serialize(
             linter_result_id=linter_result_id,
+            authorization=authorization,
             _request_auth=_request_auth,
             _content_type=_content_type,
             _headers=_headers,
@@ -177,6 +185,7 @@ class LinterResultsApi:
     def get_linter_results_without_preload_content(
         self,
         linter_result_id: StrictInt,
+        authorization: StrictStr,
         _request_timeout: Union[
             None,
             Annotated[StrictFloat, Field(gt=0)],
@@ -195,6 +204,8 @@ class LinterResultsApi:
 
         :param linter_result_id: (required)
         :type linter_result_id: int
+        :param authorization: (required)
+        :type authorization: str
         :param _request_timeout: timeout setting for this request. If one
                                  number provided, it will be total request
                                  timeout. It can also be a pair (tuple) of
@@ -219,6 +230,7 @@ class LinterResultsApi:
 
         _param = self._get_linter_results_serialize(
             linter_result_id=linter_result_id,
+            authorization=authorization,
             _request_auth=_request_auth,
             _content_type=_content_type,
             _headers=_headers,
@@ -239,6 +251,7 @@ class LinterResultsApi:
     def _get_linter_results_serialize(
         self,
         linter_result_id,
+        authorization,
         _request_auth,
         _content_type,
         _headers,
@@ -264,6 +277,8 @@ class LinterResultsApi:
             _path_params['linter_result_id'] = linter_result_id
         # process the query parameters
         # process the header parameters
+        if authorization is not None:
+            _header_params['Authorization'] = authorization
         # process the form parameters
         # process the body parameter
 
@@ -303,6 +318,7 @@ class LinterResultsApi:
     def get_scan_results(
         self,
         scan_id: StrictInt,
+        authorization: StrictStr,
         _request_timeout: Union[
             None,
             Annotated[StrictFloat, Field(gt=0)],
@@ -321,6 +337,8 @@ class LinterResultsApi:
 
         :param scan_id: (required)
         :type scan_id: int
+        :param authorization: (required)
+        :type authorization: str
         :param _request_timeout: timeout setting for this request. If one
                                  number provided, it will be total request
                                  timeout. It can also be a pair (tuple) of
@@ -345,6 +363,7 @@ class LinterResultsApi:
 
         _param = self._get_scan_results_serialize(
             scan_id=scan_id,
+            authorization=authorization,
             _request_auth=_request_auth,
             _content_type=_content_type,
             _headers=_headers,
@@ -370,6 +389,7 @@ class LinterResultsApi:
     def get_scan_results_with_http_info(
         self,
         scan_id: StrictInt,
+        authorization: StrictStr,
         _request_timeout: Union[
             None,
             Annotated[StrictFloat, Field(gt=0)],
@@ -388,6 +408,8 @@ class LinterResultsApi:
 
         :param scan_id: (required)
         :type scan_id: int
+        :param authorization: (required)
+        :type authorization: str
         :param _request_timeout: timeout setting for this request. If one
                                  number provided, it will be total request
                                  timeout. It can also be a pair (tuple) of
@@ -412,6 +434,7 @@ class LinterResultsApi:
 
         _param = self._get_scan_results_serialize(
             scan_id=scan_id,
+            authorization=authorization,
             _request_auth=_request_auth,
             _content_type=_content_type,
             _headers=_headers,
@@ -437,6 +460,7 @@ class LinterResultsApi:
     def get_scan_results_without_preload_content(
         self,
         scan_id: StrictInt,
+        authorization: StrictStr,
         _request_timeout: Union[
             None,
             Annotated[StrictFloat, Field(gt=0)],
@@ -455,6 +479,8 @@ class LinterResultsApi:
 
         :param scan_id: (required)
         :type scan_id: int
+        :param authorization: (required)
+        :type authorization: str
         :param _request_timeout: timeout setting for this request. If one
                                  number provided, it will be total request
                                  timeout. It can also be a pair (tuple) of
@@ -479,6 +505,7 @@ class LinterResultsApi:
 
         _param = self._get_scan_results_serialize(
             scan_id=scan_id,
+            authorization=authorization,
             _request_auth=_request_auth,
             _content_type=_content_type,
             _headers=_headers,
@@ -499,6 +526,7 @@ class LinterResultsApi:
     def _get_scan_results_serialize(
         self,
         scan_id,
+        authorization,
         _request_auth,
         _content_type,
         _headers,
@@ -524,6 +552,8 @@ class LinterResultsApi:
             _path_params['scan_id'] = scan_id
         # process the query parameters
         # process the header parameters
+        if authorization is not None:
+            _header_params['Authorization'] = authorization
         # process the form parameters
         # process the body parameter
 
@@ -563,6 +593,7 @@ class LinterResultsApi:
     def get_scan_stats(
         self,
         scan_id: StrictInt,
+        authorization: StrictStr,
         _request_timeout: Union[
             None,
             Annotated[StrictFloat, Field(gt=0)],
@@ -581,6 +612,8 @@ class LinterResultsApi:
 
         :param scan_id: (required)
         :type scan_id: int
+        :param authorization: (required)
+        :type authorization: str
         :param _request_timeout: timeout setting for this request. If one
                                  number provided, it will be total request
                                  timeout. It can also be a pair (tuple) of
@@ -605,6 +638,7 @@ class LinterResultsApi:
 
         _param = self._get_scan_stats_serialize(
             scan_id=scan_id,
+            authorization=authorization,
             _request_auth=_request_auth,
             _content_type=_content_type,
             _headers=_headers,
@@ -630,6 +664,7 @@ class LinterResultsApi:
     def get_scan_stats_with_http_info(
         self,
         scan_id: StrictInt,
+        authorization: StrictStr,
         _request_timeout: Union[
             None,
             Annotated[StrictFloat, Field(gt=0)],
@@ -648,6 +683,8 @@ class LinterResultsApi:
 
         :param scan_id: (required)
         :type scan_id: int
+        :param authorization: (required)
+        :type authorization: str
         :param _request_timeout: timeout setting for this request. If one
                                  number provided, it will be total request
                                  timeout. It can also be a pair (tuple) of
@@ -672,6 +709,7 @@ class LinterResultsApi:
 
         _param = self._get_scan_stats_serialize(
             scan_id=scan_id,
+            authorization=authorization,
             _request_auth=_request_auth,
             _content_type=_content_type,
             _headers=_headers,
@@ -697,6 +735,7 @@ class LinterResultsApi:
     def get_scan_stats_without_preload_content(
         self,
         scan_id: StrictInt,
+        authorization: StrictStr,
         _request_timeout: Union[
             None,
             Annotated[StrictFloat, Field(gt=0)],
@@ -715,6 +754,8 @@ class LinterResultsApi:
 
         :param scan_id: (required)
         :type scan_id: int
+        :param authorization: (required)
+        :type authorization: str
         :param _request_timeout: timeout setting for this request. If one
                                  number provided, it will be total request
                                  timeout. It can also be a pair (tuple) of
@@ -739,6 +780,7 @@ class LinterResultsApi:
 
         _param = self._get_scan_stats_serialize(
             scan_id=scan_id,
+            authorization=authorization,
             _request_auth=_request_auth,
             _content_type=_content_type,
             _headers=_headers,
@@ -759,6 +801,7 @@ class LinterResultsApi:
     def _get_scan_stats_serialize(
         self,
         scan_id,
+        authorization,
         _request_auth,
         _content_type,
         _headers,
@@ -784,6 +827,8 @@ class LinterResultsApi:
             _path_params['scan_id'] = scan_id
         # process the query parameters
         # process the header parameters
+        if authorization is not None:
+            _header_params['Authorization'] = authorization
         # process the form parameters
         # process the body parameter
 

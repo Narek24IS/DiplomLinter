@@ -36,7 +36,7 @@ def upgrade() -> None:
     sa.Column('name', sa.String(length=100), nullable=False),
     sa.Column('created_at', sa.DateTime(), nullable=True),
     sa.Column('owner_id', sa.Integer(), nullable=True),
-    sa.ForeignKeyConstraint(['owner_id'], ['users.id'], ),
+    sa.ForeignKeyConstraint(['owner_id'], ['users.user_id'], ),
     sa.PrimaryKeyConstraint('id'),
     sa.UniqueConstraint('repository_url', name='uq_repository_url')
     )
@@ -50,7 +50,7 @@ def upgrade() -> None:
     sa.Column('commit_hash', sa.String(length=40), nullable=True),
     sa.Column('total_errors', sa.Integer(), nullable=True),
     sa.Column('total_warnings', sa.Integer(), nullable=True),
-    sa.ForeignKeyConstraint(['project_id'], ['projects.id'], ),
+    sa.ForeignKeyConstraint(['project_id'], ['projects.project_id'], ),
     sa.PrimaryKeyConstraint('id')
     )
     op.create_index('ix_scans_project_id', 'scans', ['project_id'], unique=False)
@@ -62,7 +62,7 @@ def upgrade() -> None:
     sa.Column('is_success', sa.Boolean(), nullable=False),
     sa.Column('error_count', sa.Integer(), nullable=True),
     sa.Column('details', sa.JSON(), nullable=True),
-    sa.ForeignKeyConstraint(['scan_id'], ['scans.id'], ),
+    sa.ForeignKeyConstraint(['scan_id'], ['scans.scan_id'], ),
     sa.PrimaryKeyConstraint('id')
     )
     op.create_index('ix_linter_results_scan_id', 'linter_results', ['scan_id'], unique=False)

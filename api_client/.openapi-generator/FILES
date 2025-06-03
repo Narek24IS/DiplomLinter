@@ -12,7 +12,6 @@ docs/ProjectCreate.md
 docs/ProjectWithScans.md
 docs/ProjectsApi.md
 docs/Scan.md
-docs/ScanCreate.md
 docs/ScanWithResults.md
 docs/ScansApi.md
 docs/TechnicalApi.md
@@ -41,7 +40,6 @@ linter_api_client/models/project.py
 linter_api_client/models/project_create.py
 linter_api_client/models/project_with_scans.py
 linter_api_client/models/scan.py
-linter_api_client/models/scan_create.py
 linter_api_client/models/scan_with_results.py
 linter_api_client/models/user.py
 linter_api_client/models/user_create.py

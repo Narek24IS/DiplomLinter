@@ -317,6 +317,7 @@ class ProjectsApi:
     def get_project_by_id(
         self,
         project_id: StrictInt,
+        authorization: StrictStr,
         _request_timeout: Union[
             None,
             Annotated[StrictFloat, Field(gt=0)],
@@ -335,6 +336,8 @@ class ProjectsApi:
 
         :param project_id: (required)
         :type project_id: int
+        :param authorization: (required)
+        :type authorization: str
         :param _request_timeout: timeout setting for this request. If one
                                  number provided, it will be total request
                                  timeout. It can also be a pair (tuple) of
@@ -359,6 +362,7 @@ class ProjectsApi:
 
         _param = self._get_project_by_id_serialize(
             project_id=project_id,
+            authorization=authorization,
             _request_auth=_request_auth,
             _content_type=_content_type,
             _headers=_headers,
@@ -384,6 +388,7 @@ class ProjectsApi:
     def get_project_by_id_with_http_info(
         self,
         project_id: StrictInt,
+        authorization: StrictStr,
         _request_timeout: Union[
             None,
             Annotated[StrictFloat, Field(gt=0)],
@@ -402,6 +407,8 @@ class ProjectsApi:
 
         :param project_id: (required)
         :type project_id: int
+        :param authorization: (required)
+        :type authorization: str
         :param _request_timeout: timeout setting for this request. If one
                                  number provided, it will be total request
                                  timeout. It can also be a pair (tuple) of
@@ -426,6 +433,7 @@ class ProjectsApi:
 
         _param = self._get_project_by_id_serialize(
             project_id=project_id,
+            authorization=authorization,
             _request_auth=_request_auth,
             _content_type=_content_type,
             _headers=_headers,
@@ -451,6 +459,7 @@ class ProjectsApi:
     def get_project_by_id_without_preload_content(
         self,
         project_id: StrictInt,
+        authorization: StrictStr,
         _request_timeout: Union[
             None,
             Annotated[StrictFloat, Field(gt=0)],
@@ -469,6 +478,8 @@ class ProjectsApi:
 
         :param project_id: (required)
         :type project_id: int
+        :param authorization: (required)
+        :type authorization: str
         :param _request_timeout: timeout setting for this request. If one
                                  number provided, it will be total request
                                  timeout. It can also be a pair (tuple) of
@@ -493,6 +504,7 @@ class ProjectsApi:
 
         _param = self._get_project_by_id_serialize(
             project_id=project_id,
+            authorization=authorization,
             _request_auth=_request_auth,
             _content_type=_content_type,
             _headers=_headers,
@@ -513,6 +525,7 @@ class ProjectsApi:
     def _get_project_by_id_serialize(
         self,
         project_id,
+        authorization,
         _request_auth,
         _content_type,
         _headers,
@@ -538,6 +551,8 @@ class ProjectsApi:
             _path_params['project_id'] = project_id
         # process the query parameters
         # process the header parameters
+        if authorization is not None:
+            _header_params['Authorization'] = authorization
         # process the form parameters
         # process the body parameter
 
@@ -577,6 +592,7 @@ class ProjectsApi:
     def get_project_by_name(
         self,
         project_name: StrictStr,
+        authorization: StrictStr,
         _request_timeout: Union[
             None,
             Annotated[StrictFloat, Field(gt=0)],
@@ -595,6 +611,8 @@ class ProjectsApi:
 
         :param project_name: (required)
         :type project_name: str
+        :param authorization: (required)
+        :type authorization: str
         :param _request_timeout: timeout setting for this request. If one
                                  number provided, it will be total request
                                  timeout. It can also be a pair (tuple) of
@@ -619,6 +637,7 @@ class ProjectsApi:
 
         _param = self._get_project_by_name_serialize(
             project_name=project_name,
+            authorization=authorization,
             _request_auth=_request_auth,
             _content_type=_content_type,
             _headers=_headers,
@@ -644,6 +663,7 @@ class ProjectsApi:
     def get_project_by_name_with_http_info(
         self,
         project_name: StrictStr,
+        authorization: StrictStr,
         _request_timeout: Union[
             None,
             Annotated[StrictFloat, Field(gt=0)],
@@ -662,6 +682,8 @@ class ProjectsApi:
 
         :param project_name: (required)
         :type project_name: str
+        :param authorization: (required)
+        :type authorization: str
         :param _request_timeout: timeout setting for this request. If one
                                  number provided, it will be total request
                                  timeout. It can also be a pair (tuple) of
@@ -686,6 +708,7 @@ class ProjectsApi:
 
         _param = self._get_project_by_name_serialize(
             project_name=project_name,
+            authorization=authorization,
             _request_auth=_request_auth,
             _content_type=_content_type,
             _headers=_headers,
@@ -711,6 +734,7 @@ class ProjectsApi:
     def get_project_by_name_without_preload_content(
         self,
         project_name: StrictStr,
+        authorization: StrictStr,
         _request_timeout: Union[
             None,
             Annotated[StrictFloat, Field(gt=0)],
@@ -729,6 +753,8 @@ class ProjectsApi:
 
         :param project_name: (required)
         :type project_name: str
+        :param authorization: (required)
+        :type authorization: str
         :param _request_timeout: timeout setting for this request. If one
                                  number provided, it will be total request
                                  timeout. It can also be a pair (tuple) of
@@ -753,6 +779,7 @@ class ProjectsApi:
 
         _param = self._get_project_by_name_serialize(
             project_name=project_name,
+            authorization=authorization,
             _request_auth=_request_auth,
             _content_type=_content_type,
             _headers=_headers,
@@ -773,6 +800,7 @@ class ProjectsApi:
     def _get_project_by_name_serialize(
         self,
         project_name,
+        authorization,
         _request_auth,
         _content_type,
         _headers,
@@ -798,6 +826,8 @@ class ProjectsApi:
             _path_params['project_name'] = project_name
         # process the query parameters
         # process the header parameters
+        if authorization is not None:
+            _header_params['Authorization'] = authorization
         # process the form parameters
         # process the body parameter
 
@@ -836,6 +866,7 @@ class ProjectsApi:
     @validate_call
     def get_projects(
         self,
+        authorization: StrictStr,
         skip: Optional[StrictInt] = None,
         limit: Optional[StrictInt] = None,
         _request_timeout: Union[
@@ -854,6 +885,8 @@ class ProjectsApi:
         """Get Projects
 
 
+        :param authorization: (required)
+        :type authorization: str
         :param skip:
         :type skip: int
         :param limit:
@@ -881,6 +914,7 @@ class ProjectsApi:
         """ # noqa: E501
 
         _param = self._get_projects_serialize(
+            authorization=authorization,
             skip=skip,
             limit=limit,
             _request_auth=_request_auth,
@@ -907,6 +941,7 @@ class ProjectsApi:
     @validate_call
     def get_projects_with_http_info(
         self,
+        authorization: StrictStr,
         skip: Optional[StrictInt] = None,
         limit: Optional[StrictInt] = None,
         _request_timeout: Union[
@@ -925,6 +960,8 @@ class ProjectsApi:
         """Get Projects
 
 
+        :param authorization: (required)
+        :type authorization: str
         :param skip:
         :type skip: int
         :param limit:
@@ -952,6 +989,7 @@ class ProjectsApi:
         """ # noqa: E501
 
         _param = self._get_projects_serialize(
+            authorization=authorization,
             skip=skip,
             limit=limit,
             _request_auth=_request_auth,
@@ -978,6 +1016,7 @@ class ProjectsApi:
     @validate_call
     def get_projects_without_preload_content(
         self,
+        authorization: StrictStr,
         skip: Optional[StrictInt] = None,
         limit: Optional[StrictInt] = None,
         _request_timeout: Union[
@@ -996,6 +1035,8 @@ class ProjectsApi:
         """Get Projects
 
 
+        :param authorization: (required)
+        :type authorization: str
         :param skip:
         :type skip: int
         :param limit:
@@ -1023,6 +1064,7 @@ class ProjectsApi:
         """ # noqa: E501
 
         _param = self._get_projects_serialize(
+            authorization=authorization,
             skip=skip,
             limit=limit,
             _request_auth=_request_auth,
@@ -1044,6 +1086,7 @@ class ProjectsApi:
 
     def _get_projects_serialize(
         self,
+        authorization,
         skip,
         limit,
         _request_auth,
@@ -1077,6 +1120,8 @@ class ProjectsApi:
             _query_params.append(('limit', limit))
             
         # process the header parameters
+        if authorization is not None:
+            _header_params['Authorization'] = authorization
         # process the form parameters
         # process the body parameter
 

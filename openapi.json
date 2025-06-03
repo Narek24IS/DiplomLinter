@@ -248,6 +248,15 @@
               "default": 100,
               "title": "Limit"
             }
+          },
+          {
+            "name": "Authorization",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Authorization"
+            }
           }
         ],
         "responses": {
@@ -294,6 +303,15 @@
               "type": "integer",
               "title": "Project Id"
             }
+          },
+          {
+            "name": "Authorization",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Authorization"
+            }
           }
         ],
         "responses": {
@@ -336,6 +354,15 @@
               "type": "string",
               "title": "Project Name"
             }
+          },
+          {
+            "name": "Authorization",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Authorization"
+            }
           }
         ],
         "responses": {
@@ -345,102 +372,6 @@
               "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/ProjectWithScans"
-                }
-              }
-            }
-          },
-          "422": {
-            "description": "Validation Error",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/HTTPValidationError"
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    "/scans/": {
-      "post": {
-        "tags": [
-          "scans"
-        ],
-        "summary": "Create Scan",
-        "operationId": "create_scan",
-        "requestBody": {
-          "required": true,
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/ScanCreate"
-              }
-            }
-          }
-        },
-        "responses": {
-          "200": {
-            "description": "Successful Response",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Scan"
-                }
-              }
-            }
-          },
-          "422": {
-            "description": "Validation Error",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/HTTPValidationError"
-                }
-              }
-            }
-          }
-        }
-      },
-      "get": {
-        "tags": [
-          "scans"
-        ],
-        "summary": "Get Scans",
-        "operationId": "get_scans",
-        "parameters": [
-          {
-            "name": "skip",
-            "in": "query",
-            "required": false,
-            "schema": {
-              "type": "integer",
-              "default": 0,
-              "title": "Skip"
-            }
-          },
-          {
-            "name": "limit",
-            "in": "query",
-            "required": false,
-            "schema": {
-              "type": "integer",
-              "default": 100,
-              "title": "Limit"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "Successful Response",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "array",
-                  "items": {
-                    "$ref": "#/components/schemas/ScanWithResults"
-                  },
-                  "title": "Response Get Scans"
                 }
               }
             }
@@ -483,6 +414,15 @@
               "type": "string",
               "title": "Branch"
             }
+          },
+          {
+            "name": "Authorization",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Authorization"
+            }
           }
         ],
         "responses": {
@@ -492,6 +432,72 @@
               "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/Scan"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/scans/": {
+      "get": {
+        "tags": [
+          "scans"
+        ],
+        "summary": "Get Scans",
+        "operationId": "get_scans",
+        "parameters": [
+          {
+            "name": "skip",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "default": 0,
+              "title": "Skip"
+            }
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "default": 100,
+              "title": "Limit"
+            }
+          },
+          {
+            "name": "Authorization",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Authorization"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/ScanWithResults"
+                  },
+                  "title": "Response Get Scans"
                 }
               }
             }
@@ -524,6 +530,15 @@
             "schema": {
               "type": "integer",
               "title": "Scan Id"
+            }
+          },
+          {
+            "name": "Authorization",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Authorization"
             }
           }
         ],
@@ -587,6 +602,15 @@
               "default": 100,
               "title": "Limit"
             }
+          },
+          {
+            "name": "Authorization",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Authorization"
+            }
           }
         ],
         "responses": {
@@ -632,6 +656,15 @@
             "schema": {
               "type": "integer",
               "title": "Linter Result Id"
+            }
+          },
+          {
+            "name": "Authorization",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Authorization"
             }
           }
         ],
@@ -679,6 +712,15 @@
               "type": "integer",
               "title": "Scan Id"
             }
+          },
+          {
+            "name": "Authorization",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Authorization"
+            }
           }
         ],
         "responses": {
@@ -724,6 +766,15 @@
             "schema": {
               "type": "integer",
               "title": "Scan Id"
+            }
+          },
+          {
+            "name": "Authorization",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Authorization"
             }
           }
         ],
@@ -803,9 +854,9 @@
             ],
             "title": "Details"
           },
-          "id": {
+          "linter_result_id": {
             "type": "integer",
-            "title": "Id"
+            "title": "Linter Result Id"
           },
           "scan_id": {
             "type": "integer",
@@ -816,7 +867,7 @@
         "required": [
           "linter_name",
           "is_success",
-          "id",
+          "linter_result_id",
           "scan_id"
         ],
         "title": "LinterResult"
@@ -854,9 +905,9 @@
             "type": "string",
             "title": "Repository Url"
           },
-          "id": {
+          "project_id": {
             "type": "integer",
-            "title": "Id"
+            "title": "Project Id"
           },
           "created_at": {
             "type": "string",
@@ -872,7 +923,7 @@
         "required": [
           "name",
           "repository_url",
-          "id",
+          "project_id",
           "created_at",
           "owner_id"
         ],
@@ -911,9 +962,9 @@
             "type": "string",
             "title": "Repository Url"
           },
-          "id": {
+          "project_id": {
             "type": "integer",
-            "title": "Id"
+            "title": "Project Id"
           },
           "created_at": {
             "type": "string",
@@ -936,7 +987,7 @@
         "required": [
           "name",
           "repository_url",
-          "id",
+          "project_id",
           "created_at",
           "owner_id",
           "scans"
@@ -949,9 +1000,9 @@
             "type": "string",
             "title": "Branch"
           },
-          "id": {
+          "scan_id": {
             "type": "integer",
-            "title": "Id"
+            "title": "Scan Id"
           },
           "project_id": {
             "type": "integer",
@@ -992,30 +1043,12 @@
         "type": "object",
         "required": [
           "branch",
-          "id",
+          "scan_id",
           "project_id",
           "status",
           "started_at"
         ],
         "title": "Scan"
-      },
-      "ScanCreate": {
-        "properties": {
-          "branch": {
-            "type": "string",
-            "title": "Branch"
-          },
-          "project_id": {
-            "type": "integer",
-            "title": "Project Id"
-          }
-        },
-        "type": "object",
-        "required": [
-          "branch",
-          "project_id"
-        ],
-        "title": "ScanCreate"
       },
       "ScanWithResults": {
         "properties": {
@@ -1023,9 +1056,9 @@
             "type": "string",
             "title": "Branch"
           },
-          "id": {
+          "scan_id": {
             "type": "integer",
-            "title": "Id"
+            "title": "Scan Id"
           },
           "project_id": {
             "type": "integer",
@@ -1073,7 +1106,7 @@
         "type": "object",
         "required": [
           "branch",
-          "id",
+          "scan_id",
           "project_id",
           "status",
           "started_at",
@@ -1087,9 +1120,9 @@
             "type": "string",
             "title": "Username"
           },
-          "id": {
+          "user_id": {
             "type": "integer",
-            "title": "Id"
+            "title": "User Id"
           },
           "created_at": {
             "type": "string",
@@ -1100,7 +1133,7 @@
         "type": "object",
         "required": [
           "username",
-          "id",
+          "user_id",
           "created_at"
         ],
         "title": "User"

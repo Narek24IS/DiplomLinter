@@ -6,7 +6,7 @@
 Name | Type | Description | Notes
 ------------ | ------------- | ------------- | -------------
 **branch** | **str** |  | 
-**id** | **int** |  | 
+**scan_id** | **int** |  | 
 **project_id** | **int** |  | 
 **status** | **str** |  | 
 **started_at** | **datetime** |  | 

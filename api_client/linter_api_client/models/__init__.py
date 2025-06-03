@@ -21,7 +21,6 @@ from linter_api_client.models.project import Project
 from linter_api_client.models.project_create import ProjectCreate
 from linter_api_client.models.project_with_scans import ProjectWithScans
 from linter_api_client.models.scan import Scan
-from linter_api_client.models.scan_create import ScanCreate
 from linter_api_client.models.scan_with_results import ScanWithResults
 from linter_api_client.models.user import User
 from linter_api_client.models.user_create import UserCreate

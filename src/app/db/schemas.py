@@ -45,7 +45,7 @@ class LinterResultCreate(LinterResultBase):
 
 # Схемы для ответов (Response)
 class User(UserBase):
-    id: int
+    user_id: int
     created_at: datetime
 
     class Config:
@@ -53,7 +53,7 @@ class User(UserBase):
 
 
 class Project(ProjectBase):
-    id: int
+    project_id: int
     created_at: datetime
     owner_id: int
 
@@ -62,7 +62,7 @@ class Project(ProjectBase):
 
 
 class Scan(ScanBase):
-    id: int
+    scan_id: int
     project_id: int
     status: str
     started_at: datetime
@@ -75,7 +75,7 @@ class Scan(ScanBase):
 
 
 class LinterResult(LinterResultBase):
-    id: int
+    linter_result_id: int
     scan_id: int
 
     class Config:

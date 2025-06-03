@@ -10,7 +10,7 @@ Method | HTTP request | Description
 
 
 # **get_linter_results**
-> List[LinterResult] get_linter_results(linter_result_id)
+> List[LinterResult] get_linter_results(linter_result_id, authorization)
 
 Get Linter Results
 
@@ -35,10 +35,11 @@ with linter_api_client.ApiClient(configuration) as api_client:
     # Create an instance of the API class
     api_instance = linter_api_client.LinterResultsApi(api_client)
     linter_result_id = 56 # int | 
+    authorization = 'authorization_example' # str | 
 
     try:
         # Get Linter Results
-        api_response = api_instance.get_linter_results(linter_result_id)
+        api_response = api_instance.get_linter_results(linter_result_id, authorization)
         print("The response of LinterResultsApi->get_linter_results:\n")
         pprint(api_response)
     except Exception as e:
@@ -53,6 +54,7 @@ with linter_api_client.ApiClient(configuration) as api_client:
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
  **linter_result_id** | **int**|  | 
+ **authorization** | **str**|  | 
 
 ### Return type
 
@@ -77,7 +79,7 @@ No authorization required
 [[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
 
 # **get_scan_results**
-> List[LinterResult] get_scan_results(scan_id)
+> List[LinterResult] get_scan_results(scan_id, authorization)
 
 Get Scan Results
 
@@ -102,10 +104,11 @@ with linter_api_client.ApiClient(configuration) as api_client:
     # Create an instance of the API class
     api_instance = linter_api_client.LinterResultsApi(api_client)
     scan_id = 56 # int | 
+    authorization = 'authorization_example' # str | 
 
     try:
         # Get Scan Results
-        api_response = api_instance.get_scan_results(scan_id)
+        api_response = api_instance.get_scan_results(scan_id, authorization)
         print("The response of LinterResultsApi->get_scan_results:\n")
         pprint(api_response)
     except Exception as e:
@@ -120,6 +123,7 @@ with linter_api_client.ApiClient(configuration) as api_client:
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
  **scan_id** | **int**|  | 
+ **authorization** | **str**|  | 
 
 ### Return type
 
@@ -144,7 +148,7 @@ No authorization required
 [[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
 
 # **get_scan_stats**
-> List[LinterStats] get_scan_stats(scan_id)
+> List[LinterStats] get_scan_stats(scan_id, authorization)
 
 Get Scan Stats
 
@@ -169,10 +173,11 @@ with linter_api_client.ApiClient(configuration) as api_client:
     # Create an instance of the API class
     api_instance = linter_api_client.LinterResultsApi(api_client)
     scan_id = 56 # int | 
+    authorization = 'authorization_example' # str | 
 
     try:
         # Get Scan Stats
-        api_response = api_instance.get_scan_stats(scan_id)
+        api_response = api_instance.get_scan_stats(scan_id, authorization)
         print("The response of LinterResultsApi->get_scan_stats:\n")
         pprint(api_response)
     except Exception as e:
@@ -187,6 +192,7 @@ with linter_api_client.ApiClient(configuration) as api_client:
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
  **scan_id** | **int**|  | 
+ **authorization** | **str**|  | 
 
 ### Return type
 

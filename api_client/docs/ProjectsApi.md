@@ -79,7 +79,7 @@ No authorization required
 [[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
 
 # **get_project_by_id**
-> ProjectWithScans get_project_by_id(project_id)
+> ProjectWithScans get_project_by_id(project_id, authorization)
 
 Get Project By Id
 
@@ -104,10 +104,11 @@ with linter_api_client.ApiClient(configuration) as api_client:
     # Create an instance of the API class
     api_instance = linter_api_client.ProjectsApi(api_client)
     project_id = 56 # int | 
+    authorization = 'authorization_example' # str | 
 
     try:
         # Get Project By Id
-        api_response = api_instance.get_project_by_id(project_id)
+        api_response = api_instance.get_project_by_id(project_id, authorization)
         print("The response of ProjectsApi->get_project_by_id:\n")
         pprint(api_response)
     except Exception as e:
@@ -122,6 +123,7 @@ with linter_api_client.ApiClient(configuration) as api_client:
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
  **project_id** | **int**|  | 
+ **authorization** | **str**|  | 
 
 ### Return type
 
@@ -146,7 +148,7 @@ No authorization required
 [[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
 
 # **get_project_by_name**
-> ProjectWithScans get_project_by_name(project_name)
+> ProjectWithScans get_project_by_name(project_name, authorization)
 
 Get Project By Name
 
@@ -171,10 +173,11 @@ with linter_api_client.ApiClient(configuration) as api_client:
     # Create an instance of the API class
     api_instance = linter_api_client.ProjectsApi(api_client)
     project_name = 'project_name_example' # str | 
+    authorization = 'authorization_example' # str | 
 
     try:
         # Get Project By Name
-        api_response = api_instance.get_project_by_name(project_name)
+        api_response = api_instance.get_project_by_name(project_name, authorization)
         print("The response of ProjectsApi->get_project_by_name:\n")
         pprint(api_response)
     except Exception as e:
@@ -189,6 +192,7 @@ with linter_api_client.ApiClient(configuration) as api_client:
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
  **project_name** | **str**|  | 
+ **authorization** | **str**|  | 
 
 ### Return type
 
@@ -213,7 +217,7 @@ No authorization required
 [[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
 
 # **get_projects**
-> List[Project] get_projects(skip=skip, limit=limit)
+> List[Project] get_projects(authorization, skip=skip, limit=limit)
 
 Get Projects
 
@@ -237,12 +241,13 @@ configuration = linter_api_client.Configuration(
 with linter_api_client.ApiClient(configuration) as api_client:
     # Create an instance of the API class
     api_instance = linter_api_client.ProjectsApi(api_client)
+    authorization = 'authorization_example' # str | 
     skip = 0 # int |  (optional) (default to 0)
     limit = 100 # int |  (optional) (default to 100)
 
     try:
         # Get Projects
-        api_response = api_instance.get_projects(skip=skip, limit=limit)
+        api_response = api_instance.get_projects(authorization, skip=skip, limit=limit)
         print("The response of ProjectsApi->get_projects:\n")
         pprint(api_response)
     except Exception as e:
@@ -256,6 +261,7 @@ with linter_api_client.ApiClient(configuration) as api_client:
 
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
+ **authorization** | **str**|  | 
  **skip** | **int**|  | [optional] [default to 0]
  **limit** | **int**|  | [optional] [default to 100]
 

@@ -29,7 +29,7 @@ class ScanWithResults(BaseModel):
     ScanWithResults
     """ # noqa: E501
     branch: StrictStr
-    id: StrictInt
+    scan_id: StrictInt
     project_id: StrictInt
     status: StrictStr
     started_at: datetime
@@ -37,7 +37,7 @@ class ScanWithResults(BaseModel):
     total_errors: Optional[StrictInt] = 0
     total_warnings: Optional[StrictInt] = 0
     linter_results: List[LinterResult]
-    __properties: ClassVar[List[str]] = ["branch", "id", "project_id", "status", "started_at", "finished_at", "total_errors", "total_warnings", "linter_results"]
+    __properties: ClassVar[List[str]] = ["branch", "scan_id", "project_id", "status", "started_at", "finished_at", "total_errors", "total_warnings", "linter_results"]
 
     model_config = ConfigDict(
         populate_by_name=True,
@@ -103,7 +103,7 @@ class ScanWithResults(BaseModel):
 
         _obj = cls.model_validate({
             "branch": obj.get("branch"),
-            "id": obj.get("id"),
+            "scan_id": obj.get("scan_id"),
             "project_id": obj.get("project_id"),
             "status": obj.get("status"),
             "started_at": obj.get("started_at"),

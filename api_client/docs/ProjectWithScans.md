@@ -7,7 +7,7 @@ Name | Type | Description | Notes
 ------------ | ------------- | ------------- | -------------
 **name** | **str** |  | 
 **repository_url** | **str** |  | 
-**id** | **int** |  | 
+**project_id** | **int** |  | 
 **created_at** | **datetime** |  | 
 **owner_id** | **int** |  | 
 **scans** | [**List[Scan]**](Scan.md) |  | 

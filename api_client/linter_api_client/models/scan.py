@@ -28,14 +28,14 @@ class Scan(BaseModel):
     Scan
     """ # noqa: E501
     branch: StrictStr
-    id: StrictInt
+    scan_id: StrictInt
     project_id: StrictInt
     status: StrictStr
     started_at: datetime
     finished_at: Optional[datetime] = None
     total_errors: Optional[StrictInt] = 0
     total_warnings: Optional[StrictInt] = 0
-    __properties: ClassVar[List[str]] = ["branch", "id", "project_id", "status", "started_at", "finished_at", "total_errors", "total_warnings"]
+    __properties: ClassVar[List[str]] = ["branch", "scan_id", "project_id", "status", "started_at", "finished_at", "total_errors", "total_warnings"]
 
     model_config = ConfigDict(
         populate_by_name=True,
@@ -94,7 +94,7 @@ class Scan(BaseModel):
 
         _obj = cls.model_validate({
             "branch": obj.get("branch"),
-            "id": obj.get("id"),
+            "scan_id": obj.get("scan_id"),
             "project_id": obj.get("project_id"),
             "status": obj.get("status"),
             "started_at": obj.get("started_at"),
