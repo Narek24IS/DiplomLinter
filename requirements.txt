@@ -42,7 +42,6 @@ pamqp==3.3.0
 platformdirs==4.3.7
 pluggy==1.5.0
 propcache==0.2.1
-psycopg2==2.9.10
 psycopg2-binary==2.9.10
 pycodestyle==2.13.0
 pydantic==2.10.5
@@ -50,9 +49,6 @@ pydantic-settings==2.7.1
 pydantic_core==2.27.2
 pyflakes==3.3.2
 pyproject-api==1.9.0
-PyQt6==6.9.0
-PyQt6-Qt6==6.9.0
-PyQt6_sip==13.10.2
 pytest==8.3.5
 pytest-cov==6.1.1
 python-dateutil==2.9.0.post0

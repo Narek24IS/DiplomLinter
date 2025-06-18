@@ -141,3 +141,13 @@ class TestDefaultApi(unittest.TestCase):
 
 if __name__ == '__main__':
     unittest.main()
+
+
+
+def test_docker_integration(docker_client):
+    container = docker_client.containers.run(
+        'python:3.9-slim',
+        ['python', '-c', 'print("test")'],
+        remove=True
+    )
+    assert b'test' in container.logs()

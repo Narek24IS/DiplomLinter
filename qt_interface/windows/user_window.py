@@ -26,6 +26,7 @@ class UserWindow(QMainWindow, Ui_UserWindow):
         self.table_button_2.clicked.connect(self.open_scans_window)
         self.table_button_3.clicked.connect(self.open_results_window)
         self.table_button_4.clicked.connect(self.open_analysis_window)
+        self.back_btn.clicked.connect(self.go_back)
 
     def set_icon(self):
         try:

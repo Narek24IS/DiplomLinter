@@ -523,6 +523,11 @@ RUN echo "version = $(cat /tmp/scalafmt-version.txt)" >> /action/lib/.automation
   && rm /tmp/scalafmt-version.txt
 
 
+RUN apk add --no-cache \
+    qt6-qtbase-dev \
+    make \
+    g++
+
 #################################
 # Web-server part of Dockerfile #
 #################################
